@@ -16,3 +16,4 @@ tarefas concorrentes com requisitos de tempo real.
 2 - Esp32 DevKit c  
 1 - Protoboard 830 pontos  
 2 - Resistores de 220 Ohms  
+<img width="1339" height="678" alt="Captura de tela 2026-06-21 180326" src="https://github.com/user-attachments/assets/5014562d-c082-40d9-8331-360e78185249" />
