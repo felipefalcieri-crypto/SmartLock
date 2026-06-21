@@ -68,3 +68,53 @@ tarefas concorrentes com requisitos de tempo real.
 - ESP32 1 GPIO 17 → ESP32 2 GPIO 16  
 - ESP32 1 GPIO 16 → ESP32 2 GPIO 17  
 - GND ESP32 1 → GND ESP32 2  
+
+
+# Tecnologias de Comunicação Utilizadas
+
+O sistema SmartLock utiliza diferentes protocolos de comunicação para garantir integração entre os módulos e conectividade.
+
+---
+
+## Wi-Fi
+Utilizado para conexão do sistema com a rede local.
+
+- Permite comunicação com serviços externos
+- Base para o funcionamento do MQTT
+- Usado para conectividade do ESP32
+
+---
+
+## MQTT
+Protocolo de mensageria leve baseado em publish/subscribe.
+
+- Usado para envio de mensagens entre dispositivos
+- Comunicação com broker (ex: Mosquitto)
+- Ideal para IoT devido ao baixo consumo
+
+---
+
+## UART
+Comunicação serial entre os dois microcontroladores ESP32.
+
+- ESP32 1 ↔ ESP32 2
+- Transmissão de comandos e dados do sistema
+- Alta velocidade e baixa latência
+
+---
+
+## I2C
+Usado para comunicação com o display LCD 16x2.
+
+- Protocolo de dois fios (SDA e SCL)
+- Permite controle simplificado do display
+- Utiliza endereço de dispositivo
+
+---
+
+## Resumo da Arquitetura
+
+- Wi-Fi → conecta o sistema à rede  
+- MQTT → comunicação em nuvem/local broker  
+- UART → comunicação entre ESPs  
+- I2C → controle do display LCD  
