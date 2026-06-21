@@ -209,3 +209,215 @@ Campos:
 - Monitoramento remoto do sistema
 - Atualização remota de configurações
 - Fácil integração com aplicações IoT
+
+# FreeRTOS
+
+O sistema SmartLock foi desenvolvido utilizando o FreeRTOS, permitindo a execução concorrente de quatro tarefas independentes. Cada tarefa possui uma responsabilidade única, garantindo organização, modularidade e melhor gerenciamento dos recursos do sistema.
+
+---
+
+## Tarefas Implementadas
+
+### 1. KeypadTask
+
+Responsável pela leitura dos caracteres recebidos do teclado matricial através da comunicação UART.
+
+**Funções:**
+- Monitorar a porta Serial2.
+- Receber os caracteres digitados.
+- Enviar os caracteres para a fila de processamento.
+
+**Prioridade:** 3
+
+---
+
+### 2. AuthTask
+
+Responsável pela autenticação da senha digitada.
+
+**Funções:**
+- Receber os caracteres da fila.
+- Montar a senha digitada.
+- Comparar a senha informada com a senha cadastrada.
+- Determinar se o acesso será permitido ou negado.
+- Notificar as demais tarefas após a autenticação.
+
+**Prioridade:** 2
+
+---
+
+### 3. DisplayTask
+
+Responsável pela interface visual do sistema.
+
+**Funções:**
+- Atualizar o display LCD.
+- Exibir os dígitos digitados de forma mascarada.
+- Informar sucesso ou falha na autenticação.
+- Acionar os LEDs de indicação visual.
+
+**Prioridade:** 1
+
+---
+
+### 4. MQTTTask
+
+Responsável pela comunicação em rede.
+
+**Funções:**
+- Gerenciar a conexão Wi-Fi.
+- Conectar ao broker MQTT.
+- Publicar eventos de autenticação.
+- Receber configurações remotas.
+- Publicar mensagens de heartbeat.
+
+**Prioridade:** 1
+
+---
+
+# Recursos FreeRTOS Utilizados
+
+## Queue (Fila)
+
+Foi utilizada uma fila para transferir os caracteres digitados da tarefa de leitura para a tarefa de autenticação.
+
+```text
+KeypadTask → filaDigitos → AuthTask
+```
+
+**Objeto utilizado:**
+
+```cpp
+QueueHandle_t filaDigitos;
+```
+
+**Finalidade:**
+- Comunicação segura entre tarefas.
+- Armazenamento temporário dos caracteres digitados.
+- Evita perda de dados durante o processamento.
+
+---
+
+## Semaphore (Semáforo)
+
+Foi utilizado um semáforo binário para sincronizar a atualização do display.
+
+```text
+AuthTask → semaforoDisplay → DisplayTask
+```
+
+**Objeto utilizado:**
+
+```cpp
+SemaphoreHandle_t semaforoDisplay;
+```
+
+**Finalidade:**
+- Sinalizar quando o LCD deve ser atualizado.
+- Evitar atualizações desnecessárias.
+- Melhorar a sincronização entre tarefas.
+
+---
+
+## Event Group
+
+Foi utilizado um grupo de eventos para informar à MQTTTask quando uma autenticação foi concluída.
+
+```text
+AuthTask → BIT_AUTH_PROCESSADA → MQTTTask
+```
+
+**Objeto utilizado:**
+
+```cpp
+EventGroupHandle_t grupoEventosMQTT;
+```
+
+**Evento utilizado:**
+
+```cpp
+#define BIT_AUTH_PROCESSADA (1 << 0)
+```
+
+**Finalidade:**
+- Notificar a conclusão do processo de autenticação.
+- Permitir a publicação de eventos MQTT apenas quando necessário.
+
+---
+
+# Configuração MQTT
+
+O SmartLock utiliza o protocolo MQTT para comunicação remota através da rede Wi-Fi.
+
+Após conectar-se à rede, o ESP32 estabelece conexão com o broker MQTT e passa a publicar eventos de autenticação, receber configurações remotas e enviar mensagens periódicas de monitoramento.
+
+---
+
+## Tópicos MQTT Utilizados
+
+### smartlock/eventos
+
+Utilizado para informar eventos de autenticação.
+
+**Direção:** ESP32 → Broker
+
+Exemplo:
+
+```json
+{
+  "status": "OK",
+  "ts": 1720000000
+}
+```
+
+**Campos:**
+- `status`: resultado da autenticação.
+- `ts`: timestamp do evento.
+
+---
+
+### smartlock/config
+
+Utilizado para receber configurações remotas.
+
+**Direção:** Broker → ESP32
+
+Exemplo:
+
+```json
+{
+  "nova_senha": "5678"
+}
+```
+
+**Campos:**
+- `nova_senha`: nova senha cadastrada remotamente.
+
+---
+
+### smartlock/heartbeat
+
+Utilizado para monitoramento do dispositivo.
+
+**Direção:** ESP32 → Broker
+
+Exemplo:
+
+```json
+{
+  "uptime_s": 3600
+}
+```
+
+**Campos:**
+- `uptime_s`: tempo de funcionamento do dispositivo em segundos.
+
+---
+
+## Fluxo MQTT
+
+1. O ESP32 conecta-se à rede Wi-Fi.
+2. O ESP32 conecta-se ao broker MQTT.
+3. Eventos de autenticação são publicados em `smartlock/eventos`.
+4. Configurações remotas são recebidas em `smartlock/config`.
+5. Mensagens periódicas são enviadas em `smartlock/heartbeat`.
