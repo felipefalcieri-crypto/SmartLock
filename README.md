@@ -8,8 +8,7 @@ teclado matricial 4x4. O display LCD 16x2 exibe o status em tempo real. O ESP32 
 eventos de acesso via MQTT e recebe comandos remotos. O FreeRTOS gerencia quatro
 tarefas concorrentes com requisitos de tempo real.
 
-#Componentes
-
+# Componentes
 1 - LCD  16X2 (I2C)
 1 - Keypad 4x4
 1 - LED Verde
