@@ -9,6 +9,7 @@ eventos de acesso via MQTT e recebe comandos remotos. O FreeRTOS gerencia quatro
 tarefas concorrentes com requisitos de tempo real.
 
 #Componentes
+
 1 - LCD  16X2 (I2C)
 1 - Keypad 4x4
 1 - LED Verde
