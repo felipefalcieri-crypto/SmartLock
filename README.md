@@ -90,7 +90,7 @@ Utilizado para conexão do sistema com a rede local.
 Protocolo de mensageria leve baseado em publish/subscribe.
 
 - Usado para envio de mensagens entre dispositivos
-- Comunicação com broker (ex: Mosquitto)
+- Comunicação com broker
 - Ideal para IoT devido ao baixo consumo
 
 ---
