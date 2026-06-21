@@ -69,6 +69,7 @@ tarefas concorrentes com requisitos de tempo real.
 - ESP32 1 GPIO 16 → ESP32 2 GPIO 17  
 - GND ESP32 1 → GND ESP32 2  
 
+---
 
 # Tecnologias de Comunicação Utilizadas
 
