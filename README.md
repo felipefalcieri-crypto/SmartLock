@@ -119,3 +119,93 @@ Usado para comunicação com o display LCD 16x2.
 - MQTT → comunicação em nuvem/local broker  
 - UART → comunicação entre ESPs  
 - I2C → controle do display LCD  
+
+# Configuração MQTT
+
+O SmartLock utiliza o protocolo MQTT para comunicação entre o ESP32 e o broker MQTT através da rede Wi-Fi.
+
+Após conectar-se à rede, o ESP32 estabelece conexão com o broker e passa a publicar eventos do sistema e receber configurações remotamente.
+
+---
+
+## Tópicos MQTT Utilizados
+
+### smartlock/eventos
+
+Tópico utilizado para publicar eventos relacionados ao controle de acesso.
+
+**Direção:** ESP32 → Broker
+
+Exemplo:
+
+```json
+{
+  "status": "OK",
+  "ts": 1720000000
+}
+```
+
+Campos:
+
+- `status`: resultado da operação realizada
+- `ts`: timestamp do evento
+
+---
+
+### smartlock/config
+
+Tópico utilizado para receber configurações remotas.
+
+**Direção:** Broker → ESP32
+
+Exemplo:
+
+```json
+{
+  "nova_senha": "5678"
+}
+```
+
+Campos:
+
+- `nova_senha`: nova senha cadastrada no sistema
+
+---
+
+### smartlock/heartbeat
+
+Tópico utilizado para monitoramento do dispositivo.
+
+**Direção:** ESP32 → Broker
+
+Exemplo:
+
+```json
+{
+  "uptime_s": 3600
+}
+```
+
+Campos:
+
+- `uptime_s`: tempo de funcionamento do ESP32 em segundos
+
+---
+
+## Fluxo de Comunicação
+
+1. O ESP32 conecta-se à rede Wi-Fi.
+2. O ESP32 conecta-se ao broker MQTT.
+3. Eventos de acesso são publicados em `smartlock/eventos`.
+4. Configurações remotas são recebidas por `smartlock/config`.
+5. Periodicamente o dispositivo envia mensagens de monitoramento para `smartlock/heartbeat`.
+
+---
+
+## Benefícios do MQTT no Projeto
+
+- Comunicação leve e eficiente
+- Baixo consumo de banda
+- Monitoramento remoto do sistema
+- Atualização remota de configurações
+- Fácil integração com aplicações IoT
