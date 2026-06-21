@@ -19,3 +19,5 @@ tarefas concorrentes com requisitos de tempo real.
 
 # Esquemático do Circuito
 <img width="1339" height="678" alt="Captura de tela 2026-06-21 180326" src="https://github.com/user-attachments/assets/5014562d-c082-40d9-8331-360e78185249" />  
+
+#Ligações do circuito
